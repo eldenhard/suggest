@@ -39,7 +39,7 @@ project
 │       └── no-photo.png
 ├── package.json
 └── README.md
-
+```
 # Vue Suggestions Component with Debounce and API Integration
 
 Этот проект реализует компонент на Vue 3 для отображения предложений из API, включая задержку запросов (debounce), адаптивный интерфейс, обработку ошибок и загрузок. Компонент предоставляет переиспользуемую архитектуру для API-взаимодействия и поддерживает динамическую настройку для разных источников данных.
@@ -92,3 +92,129 @@ project
   </main>
 </template>
 ```
+### 2. VSuggestItem.vue
+Компонент для отображения списка предложений.
+
+#### 🛠️ Свойства:
+responseData: массив предложений из API.
+
+#### 🎯 События:
+@selectedItem: отправляет выбранное предложение обратно в родительский компонент.
+
+### 3. VLoader.vue
+Простой компонент, отображающий индикатор загрузки.
+
+### 4. VTag.vue
+Компонент для отображения выбранных тегов с возможностью их удаления.
+
+
+## 📜 Composables
+### useGetFetchSuggestions.ts
+Composable для взаимодействия с API.
+
+#### 🔧 Параметры:
+``` typescript
+interface FetchSuggestionsOptions<T> {
+  apiUrl: string; // URL API
+  transformResponse?: (data: any) => T[]; // Логика трансформации данных
+  validateQueryParams?: (query: string) => boolean; // Логика проверки запроса
+}
+```
+
+####  🛠️ Возвращаемые данные:
+``` typescript
+{
+  isLoading: Ref<boolean>,
+  error: Ref<string | null>,
+  responseData: Ref<T[]>,
+  fetchSuggestions: (query: string) => void
+}
+```
+Пример использования:
+
+``` typescript
+const { isLoading, error, responseData, fetchSuggestions } = useGetFetchSuggestions({
+  apiUrl: "https://api.example.com/suggestions",
+  transformResponse: (data) => data.items,
+  validateQueryParams: (query) => query.length >= 3,
+});
+```
+
+## ⚙️ Утилиты
+### debounce.ts
+Функция для задержки выполнения запросов.
+
+Пример кода:
+```typescript
+
+export function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): T {
+  let timeout: ReturnType<typeof setTimeout>;
+
+  return ((...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  }) as T;
+}
+```
+
+## 🎨 Стили
+### Пример адаптивного дизайна:
+
+```css
+.suggest-container {
+  width: clamp(20%, 35%, 80%);
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+              rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+              rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+  overflow-y: auto;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .suggest-container {
+    width: 80%;
+  }
+}
+```
+
+## 📡 Работа с API
+### Конфигурация API:
+
+```typescript
+
+const { isLoading, error, responseData, fetchSuggestions } = useGetFetchSuggestions({
+  apiUrl: "https://habr.com/kek/v2/publication/suggest-mention",
+  transformResponse: (data) => data.data,
+  validateQueryParams: (query) => query.trim().length >= 3,
+});
+```
+### Обработка ошибок:
+400 Error: Отображает сообщение "Некорректный запрос. Повторите попытку."
+500 Error: Отображает сообщение "Ошибка сервера. Повторите позже."
+
+
+## 🛠 Установка проекта
+### Клонируйте репозиторий:
+
+``` bash
+git clone https://github.com/eldenhard/suggest.git
+```
+### Установите зависимости:
+
+```bash
+npm install
+```
+
+### Запустите сервер разработки:
+
+``` bash
+npm run dev
+```
+
