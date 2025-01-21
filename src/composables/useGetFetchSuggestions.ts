@@ -1,4 +1,4 @@
-import { ref } from "vue";
+
 
 /**
  * Функция для загрузки данных из API
@@ -14,6 +14,7 @@ import { ref } from "vue";
  *   responseData - полученные данные,
  *   fetchSuggestions - функция для загрузки данных
  */
+import { ref } from "vue";
 interface FetchSuggestionsOptions<T> {
   apiUrl: string;
   transformResponse?: (data: any) => T[];

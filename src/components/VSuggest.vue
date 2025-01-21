@@ -73,12 +73,12 @@
             v-model="query"
             :disabled="listItem.length >= tagAmount"
             :placeholder="listItem.length >= tagAmount ? '' : 'Введите логин'"
-            @keydown.enter.prevent="addItemToList(query)"
             @input="debouncedFetchSuggestions"
             id="suggest"
             type="text"
             aria-autocomplete="list"
             aria-expanded="true"
+            autocomplete="off"
             class="input-field"
           />
           <VLoader v-if="isLoading" class="loader" />
