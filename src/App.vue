@@ -3,10 +3,7 @@
 </script>
 
 <template>
-  <!-- 
-   TODO API URL 
-   TODO validator 
-   -->
+  <!-- TODO API URL TODO validator -->
     <VSuggest :inputLabel="'Пользователь или компания'" :tagAmount="4" :placeholderSuggest="'Введите логин'"/>
 </template>
 
