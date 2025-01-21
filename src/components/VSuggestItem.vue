@@ -1,13 +1,14 @@
 <script setup lang="ts">
-  import { ref, defineProps, onMounted, onUnmounted, nextTick } from "vue";
+  import { ref, defineProps,  onMounted, onUnmounted, nextTick } from "vue";
 
   import VUserEntity from "./VUserEntity.vue";
   import VCompanyEntity from "./VCompanyEntity.vue";
   import type { SuggestItem } from "../types/index";
 
+
   const props = defineProps<{
-    responseData: SuggestItem[];
-  }>();
+      responseData: SuggestItem[] | any
+    }>();
 
   const emit = defineEmits<{
     selectedItem: [alias: string];
