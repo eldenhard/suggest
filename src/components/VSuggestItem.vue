@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, defineProps, defineEmits, computed, onMounted } from "vue";
+  import { ref, defineProps, defineEmits } from "vue";
   import noPhoto from "../assets/images/noPhoto.png";
   import type { SuggestItem } from "../types/index";
   const listItemRef = ref<HTMLElement | null>(null);
@@ -13,21 +13,6 @@
   }>();
   const selectedItem = (alias: string) => emit("selectedItem", alias);
 
-  // const currentHeightElement = computed(() => {
-  //   if (listItemRef.value) {
-  //     // Получаем высоту одного элемента и умножаем на 4
-  //     console.log(listItemRef.value.offsetHeight);
-  //     return listItemRef.value.offsetHeight * 4;
-  //   }
-  //   return 0;
-  // });
-
-  onMounted(() => {
-    // const container = document.querySelector(".suggest-container") as HTMLElement | null;
-    // if (container) {
-    //   container.style.height = `${currentHeightElement.value}px`;
-    // }
-  });
 </script>
 
 <template>
