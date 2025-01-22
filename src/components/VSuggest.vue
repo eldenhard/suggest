@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, onMounted, defineProps } from "vue";
+  import { ref, watch, onMounted, defineProps, nextTick } from "vue";
   import { debounce } from "../utils/debounce";
   import { useGetFetchSuggestions } from "../composables/useGetFetchSuggestions";
 
@@ -11,6 +11,7 @@
   const query = ref<string>("");
   const flagActiveList = ref<boolean>(false);
   const inputUserValue = ref<HTMLInputElement | null>(null);
+  const excludedElements = ref<HTMLElement[]>([]);
 
   const props = withDefaults(
     defineProps<{
@@ -48,15 +49,25 @@
     listItem.value.splice(index, 1);
   };
 
+  const handleOutsideClick = () => {
+    flagActiveList.value = false;
+  };
+
+  const handleInputClick = async () => {
+    if (responseData.value.length > 0) {
+      await nextTick();
+      flagActiveList.value = true;
+    }
+  };
   watch(query, (oldVal, newVal) => {
     if (oldVal !== newVal) {
-
       flagActiveList.value = false;
-      error.value = null
+      error.value = null;
     }
   });
   onMounted(() => {
     inputUserValue.value?.focus();
+    excludedElements.value = [document.querySelector(".input-field")!];
   });
 </script>
 
@@ -78,6 +89,7 @@
             :disabled="listItem.length >= tagAmount"
             :placeholder="listItem.length >= tagAmount ? '' : 'Введите логин'"
             @input="debouncedFetchSuggestions"
+            @click="handleInputClick"
             id="suggest"
             type="text"
             aria-autocomplete="list"
@@ -89,9 +101,8 @@
         </div>
         <p v-if="error" class="error-message">{{ error }}</p>
       </div>
-      <div class="sugg_left">
-
-        <VSuggestItem :responseData="responseData" @selectedItem="addItemToList" v-if="flagActiveList" />
+      <div v-if="flagActiveList"  class="suggest_left">
+        <VSuggestItem v-click-outside:[excludedElements]="handleOutsideClick" :responseData="responseData" @selectedItem="addItemToList" />
       </div>
     </section>
   </main>
@@ -111,10 +122,10 @@
     align-items: center;
     gap: 16px;
     width: 100%;
-
   }
 
-  .form-group,.sugg_left {
+  .form-group,
+  .suggest_left {
     display: flex;
     flex-direction: column;
     width: 60vw;
@@ -124,7 +135,7 @@
   .label_description {
     font-weight: bold;
     padding: 4px 0;
-    font-size: 1em;
+    font-size: 1.1em;
   }
 
   .required-star {
@@ -170,15 +181,15 @@
   }
 
   @media screen and (max-width: 1000px) {
-    .input_block {
+    /* .input_block {
       width: 80vw;
       
-    }
+    } */
     .label_description {
-      font-size: 0.8em;
+      font-size: 0.9em;
     }
-    .form-group {
+    /* .form-group {
     width: 80vw;
-  }
+  } */
   }
 </style>
