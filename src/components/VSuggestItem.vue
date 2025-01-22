@@ -1,14 +1,13 @@
 <script setup lang="ts">
-  import { ref, defineProps,  onMounted, onUnmounted, nextTick } from "vue";
+  import { ref, defineProps, onMounted, onUnmounted, nextTick } from "vue";
 
   import VUserEntity from "./VUserEntity.vue";
   import VCompanyEntity from "./VCompanyEntity.vue";
   import type { SuggestItem } from "../types/index";
 
-
   const props = defineProps<{
-      responseData: SuggestItem[] | any
-    }>();
+    responseData: SuggestItem[] | any;
+  }>();
 
   const emit = defineEmits<{
     selectedItem: [alias: string];
@@ -52,7 +51,12 @@
 <template>
   <div class="suggest-container">
     <ul class="suggest-list" ref="suggestListRef">
-      <li v-for="(item, index) in responseData" :key="JSON.stringify(item)" :class="['suggest-item', { active: index === activeIndex }]" @click="selectedItem(item.alias)">
+      <li
+        v-for="(item, index) in responseData"
+        :key="JSON.stringify(item)"
+        :class="['suggest-item', { active: index === activeIndex }]"
+        @click="selectedItem(item.alias)"
+        role="option">
         <component :is="item.type === 'company' ? VCompanyEntity : VUserEntity" :item="item" />
       </li>
     </ul>

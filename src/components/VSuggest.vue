@@ -94,7 +94,8 @@
             id="suggest"
             type="text"
             aria-autocomplete="list"
-            aria-expanded="true"
+            aria-controls="suggest-list"
+            aria-activedescendant="suggest-item-{{ activeIndex }}"
             autocomplete="off"
             class="input-field"
           />
@@ -102,8 +103,8 @@
         </div>
         <p v-if="error" class="error-message">{{ error }}</p>
       </div>
-      <div v-if="flagActiveList"  class="suggest_left">
-        <VSuggestItem v-click-outside:[excludedElements]="handleOutsideClick" :responseData="responseData" @selectedItem="addItemToList" />
+      <div v-if="flagActiveList" class="suggest_left">
+        <VSuggestItem v-click-outside:[excludedElements]="handleOutsideClick" :responseData="responseData" @selectedItem="addItemToList" role="listbox" />
       </div>
     </section>
   </main>

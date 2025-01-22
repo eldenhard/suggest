@@ -14,7 +14,7 @@
 
 <template>
   <ul class="tag_list">
-    <li v-for="(item, index) in listItem" :key="index" class="tag">
+    <li v-for="(item, index) in listItem" :key="index" class="tag"  :aria-label="`Удалить тег ${item}`">
       @{{ item }}
       <button class="remove-btn" @click="removeItem(index)" aria-label="Удалить">×</button>
     </li>
