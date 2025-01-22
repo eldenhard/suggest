@@ -25,7 +25,7 @@
     }
   );
 
-  const { isLoading, error, responseData, fetchSuggestions } = useGetFetchSuggestions({
+  let { isLoading, error, responseData, fetchSuggestions } = useGetFetchSuggestions({
     apiUrl: "https://habr.com/kek/v2/publication/suggest-mention",
     transformResponse: (data) => data.data,
     validateQueryParams: (query) => query.trim().length >= 3,
@@ -49,7 +49,11 @@
   };
 
   watch(query, (oldVal, newVal) => {
-    if (oldVal !== newVal) flagActiveList.value = false;
+    if (oldVal !== newVal) {
+
+      flagActiveList.value = false;
+      error.value = null
+    }
   });
   onMounted(() => {
     inputUserValue.value?.focus();
@@ -85,31 +89,36 @@
         </div>
         <p v-if="error" class="error-message">{{ error }}</p>
       </div>
-      <VSuggestItem :responseData="responseData" @selectedItem="addItemToList" v-if="flagActiveList" />
+      <div class="sugg_left">
+
+        <VSuggestItem :responseData="responseData" @selectedItem="addItemToList" v-if="flagActiveList" />
+      </div>
     </section>
   </main>
 </template>
 
 <style scoped>
   .main-container {
-    height: 100vh;
+    height: auto;
     width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* background: rgb(243, 193, 193); */
   }
 
   .section-container {
+    margin-top: 20%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 16px;
-    /* background: lightgreen; */
+    width: 100%;
+
   }
 
-  .form-group {
+  .form-group,.sugg_left {
     display: flex;
     flex-direction: column;
+    width: 60vw;
+    /* background: lightskyblue; */
   }
 
   .label_description {
@@ -123,7 +132,7 @@
   }
 
   .input_block {
-    width: 60vw;
+    width: 100%;
     height: 6vh;
     border: 1px solid #ccc;
     padding: 8px;
@@ -148,6 +157,7 @@
     outline: none;
     padding: 4px;
     font-size: 1rem;
+    background: transparent;
   }
 
   .input-field:disabled {
@@ -162,9 +172,13 @@
   @media screen and (max-width: 1000px) {
     .input_block {
       width: 80vw;
+      
     }
     .label_description {
       font-size: 0.8em;
     }
+    .form-group {
+    width: 80vw;
+  }
   }
 </style>

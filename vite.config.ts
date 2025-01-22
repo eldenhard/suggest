@@ -5,4 +5,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   base: '/suggest_habr/',
   plugins: [vue()],
+  // resolve: {
+  //   alias: [{ find: "@", replacement: fileURLToPath(new URL("./src", import.meta.url)) }],
+  // },
 })
