@@ -90,6 +90,7 @@
             :placeholder="listItem.length >= tagAmount ? '' : 'Введите логин'"
             @input="debouncedFetchSuggestions"
             @click="handleInputClick"
+            @keydown.enter="handleInputClick"
             id="suggest"
             type="text"
             aria-autocomplete="list"
