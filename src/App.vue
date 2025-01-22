@@ -3,8 +3,11 @@
 </script>
 
 <template>
-  <!-- TODO API URL TODO validator -->
-    <VSuggest :inputLabel="'Пользователь или компания'" :tagAmount="4" :placeholderSuggest="'Введите логин'"/>
+    <VSuggest :inputLabel="'Пользователь или компания'" 
+      :tagAmount="1" 
+      :placeholderSuggest="'Введите логин'" 
+      :apiUrl="'https://habr.com/kek/v2/publication/suggest-mention'"   
+      />
 </template>
 
 

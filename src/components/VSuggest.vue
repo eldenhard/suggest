@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, onMounted, defineProps, nextTick } from "vue";
+  import { ref, watch, onMounted, defineProps, onBeforeUnmount } from "vue";
   import { debounce } from "../utils/debounce";
   import { useGetFetchSuggestions } from "../composables/useGetFetchSuggestions";
 
@@ -11,6 +11,7 @@
   const query = ref<string>("");
   const flagActiveList = ref<boolean>(false);
   const inputUserValue = ref<HTMLInputElement | null>(null);
+  const isVisibleMobileSuggest = ref<boolean>(window.innerWidth <= 1200);
   const excludedElements = ref<HTMLElement[]>([]);
 
   const props = withDefaults(
@@ -18,16 +19,18 @@
       inputLabel: string;
       tagAmount: number;
       placeholderSuggest: string;
+      apiUrl: string;
     }>(),
     {
+      apiUrl: "https://habr.com/kek/v2/publication/suggest-mention",
       inputLabel: "Пользователь или компания",
       placeholderSuggest: "Введите логин",
       tagAmount: 1,
     }
   );
 
-  let { isLoading, error, responseData, fetchSuggestions } = useGetFetchSuggestions({
-    apiUrl: "https://habr.com/kek/v2/publication/suggest-mention",
+  const { isLoading, error, responseData, fetchSuggestions } = useGetFetchSuggestions({
+    apiUrl: props.apiUrl,
     transformResponse: (data) => data.data,
     validateQueryParams: (query) => query.trim().length >= 3,
   });
@@ -38,13 +41,16 @@
     });
   }, 1000);
 
+  // Управление тегами
   const addItemToList = (val: string) => {
-    if (val.trim() && props.tagAmount >= listItem.value.length) {
-      listItem.value.push(String(val.trim()));
+    if (val.trim() && listItem.value.length < props.tagAmount) {
+      listItem.value.push(val.trim());
       query.value = "";
       flagActiveList.value = false;
+      inputUserValue.value?.focus();
     }
   };
+
   const removeItem = (index: number) => {
     listItem.value.splice(index, 1);
   };
@@ -53,21 +59,30 @@
     flagActiveList.value = false;
   };
 
-  const handleInputClick = async () => {
-    if (responseData.value.length > 0) {
-      await nextTick();
+  const handleInputClick = () => {
+    if (responseData.value.length > 0 && query.value.trim()) {
       flagActiveList.value = true;
     }
   };
-  watch(query, (oldVal, newVal) => {
-    if (oldVal !== newVal) {
-      flagActiveList.value = false;
-      error.value = null;
-    }
+
+  const updateIsMobile = () => {
+    isVisibleMobileSuggest.value = window.innerWidth <= 1000;
+  };
+
+  // Слежение за изменением запроса
+  watch(query, () => {
+    error.value = null;
+    flagActiveList.value = false;
   });
+
+
   onMounted(() => {
-    inputUserValue.value?.focus();
-    excludedElements.value = [document.querySelector(".input-field")!];
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile);
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener("resize", updateIsMobile);
   });
 </script>
 
@@ -79,9 +94,10 @@
           <span class="required-star">*</span>
           {{ inputLabel }}
         </label>
+        <VTag @removeItem="removeItem" :listItem="listItem" v-if="isVisibleMobileSuggest" class="v_tag_class" />
 
         <div class="input_block">
-          <VTag @removeItem="removeItem" :listItem="listItem" />
+          <VTag @removeItem="removeItem" :listItem="listItem" v-if="!isVisibleMobileSuggest" />
 
           <input
             ref="inputUserValue"
@@ -131,7 +147,6 @@
     display: flex;
     flex-direction: column;
     width: 60vw;
-    /* background: lightskyblue; */
   }
 
   .label_description {
@@ -151,6 +166,7 @@
     padding: 8px;
     border-radius: 8px;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 8px;
   }
@@ -179,19 +195,19 @@
   }
 
   .error-message {
-    color: red; /* Добавьте стиль для сообщения об ошибке */
+    color: red;
   }
-
+  .v_tag_class {
+    margin: 0 auto 4px 0;
+  }
   @media screen and (max-width: 1000px) {
-    /* .input_block {
-      width: 80vw;
-      
-    } */
     .label_description {
       font-size: 0.9em;
     }
-    /* .form-group {
-    width: 80vw;
-  } */
+
+    .form-group,
+    .suggest_left {
+      width: 80vw;
+    }
   }
 </style>

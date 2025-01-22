@@ -26,25 +26,27 @@ project
 │   │   ├── VSuggestItem.vue
 │   │   ├── VTag.vue
 │   │   ├── VLoader.vue
+│   │   ├── VCompanyEntity.vue
+│   │   ├── VUserEntity.vue
 │   ├── composables
 │   │   └── useGetFetchSuggestions.ts
 │   ├── utils
 │   │   └── debounce.ts
+│   │   └── clickOutside.ts
 │   ├── types
 │   │   └── index.ts
 │   ├── App.vue
 │   └── main.ts
 ├── public
 │   └── assets
-│       └── no-photo.png
+│       └── images
+│            └── noPhoto.png
+│       └── styles
+│            └── style.css
+│            └── suggestItemStyle.css
 ├── package.json
 └── README.md
 ```
-# Vue Suggestions Component with Debounce and API Integration
-
-Этот проект реализует компонент на Vue 3 для отображения предложений из API, включая задержку запросов (debounce), адаптивный интерфейс, обработку ошибок и загрузок. Компонент предоставляет переиспользуемую архитектуру для API-взаимодействия и поддерживает динамическую настройку для разных источников данных.
-
----
 
 ## 🔧 Компоненты
 
@@ -107,6 +109,11 @@ responseData: массив предложений из API.
 ### 4. VTag.vue
 Компонент для отображения выбранных тегов с возможностью их удаления.
 
+### 4. VCompanyEntity.vue
+Компонент для отображения данных когда тип = компания
+
+### 4. VUserEntity.vue
+Компонент для отображения данных когда тип != компания
 
 ## 📜 Composables
 ### useGetFetchSuggestions.ts

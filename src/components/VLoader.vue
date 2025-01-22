@@ -12,6 +12,9 @@
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     animation: rotation 1s linear infinite;
   }
 
