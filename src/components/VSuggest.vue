@@ -103,7 +103,7 @@
             ref="inputUserValue"
             v-model="query"
             :disabled="listItem.length >= tagAmount"
-            :placeholder="listItem.length >= tagAmount ? '' : 'Введите логин'"
+            :placeholder="listItem.length >= tagAmount ? `Кол-вол сущностей не более ${tagAmount} шт.` : 'Введите логин'"
             @input="debouncedFetchSuggestions"
             @click="handleInputClick"
             @keydown.enter="handleInputClick"
