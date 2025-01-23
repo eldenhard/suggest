@@ -3,8 +3,8 @@
   import { debounce } from "../utils/debounce";
   import { useGetFetchSuggestions } from "../composables/useGetFetchSuggestions";
 
-  import VSuggestItem from "./VSuggestItem.vue";
-  import VTag from "./VTag.vue";
+  import VSuggestDropdown from "./VSuggestDropdown.vue";
+  import VTagList from "./VTagList.vue";
   import VLoader from "./VLoader.vue";
 
   const listItem = ref<string[]>([]);
@@ -17,7 +17,7 @@
   const props = withDefaults(
     defineProps<{
       inputLabel: string;
-      tagAmount: number;
+      maxAmountTags: number;
       placeholderSuggest: string;
       apiUrl: string;
     }>(),
@@ -25,7 +25,7 @@
       apiUrl: "https://habr.com/kek/v2/publication/suggest-mention",
       inputLabel: "Пользователь или компания",
       placeholderSuggest: "Введите логин",
-      tagAmount: 1,
+      maxAmountTags: 1,
     }
   );
 
@@ -43,7 +43,7 @@
 
   // Управление тегами
   const addItemToList = (val: string) => {
-    if (val.trim() && listItem.value.length < props.tagAmount) {
+    if (val.trim() && listItem.value.length < props.maxAmountTags) {
       listItem.value.push(val.trim());
       query.value = "";
       flagActiveList.value = false;
@@ -94,16 +94,16 @@
           <span class="required-star">*</span>
           {{ inputLabel }}
         </label>
-        <VTag @removeItem="removeItem" :listItem="listItem" v-if="isVisibleMobileSuggest" class="v_tag_class" />
+        <VTagList @removeItem="removeItem" :listItem="listItem" v-if="isVisibleMobileSuggest" class="v_tag_class" />
 
         <div class="input_block">
-          <VTag @removeItem="removeItem" :listItem="listItem" v-if="!isVisibleMobileSuggest" />
+          <VTagList @removeItem="removeItem" :listItem="listItem" v-if="!isVisibleMobileSuggest" />
 
           <input
             ref="inputUserValue"
             v-model="query"
-            :disabled="listItem.length >= tagAmount"
-            :placeholder="listItem.length >= tagAmount ? `Кол-вол сущностей не более ${tagAmount} шт.` : 'Введите логин'"
+            :disabled="listItem.length >= maxAmountTags"
+            :placeholder="listItem.length >= maxAmountTags ? `Кол-вол сущностей не более ${maxAmountTags} шт.` : 'Введите логин'"
             @input="debouncedFetchSuggestions"
             @click="handleInputClick"
             @keydown.enter="handleInputClick"
@@ -120,7 +120,7 @@
         <p v-if="error" class="error-message">{{ error }}</p>
       </div>
       <div v-if="flagActiveList" class="suggest_left">
-        <VSuggestItem v-click-outside:[excludedElements]="handleOutsideClick" :responseData="responseData" @selectedItem="addItemToList" role="listbox" />
+        <VSuggestDropdown v-click-outside:[excludedElements]="handleOutsideClick" :responseData="responseData" @selectItem="addItemToList" role="listbox" />
       </div>
     </section>
   </main>

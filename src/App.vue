@@ -4,7 +4,7 @@
 
 <template>
     <VSuggest :inputLabel="'Пользователь или компания'" 
-      :tagAmount="1" 
+      :maxAmountTags="1" 
       :placeholderSuggest="'Введите логин'" 
       :apiUrl="'https://habr.com/kek/v2/publication/suggest-mention'"   
       />

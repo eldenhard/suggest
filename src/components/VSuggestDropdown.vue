@@ -10,13 +10,13 @@
   }>();
 
   const emit = defineEmits<{
-    selectedItem: [alias: string];
+    selectItem: [alias: string];
   }>();
 
   const activeIndex = ref<number>(-1);
   const suggestListRef = ref<HTMLUListElement | null>(null);
 
-  const selectedItem = (alias: string) => emit("selectedItem", alias);
+  const selectItem = (alias: string) => emit("selectItem", alias);
 
   const handleKeydown = async (event: KeyboardEvent) => {
     if (event.key === "ArrowDown") {
@@ -28,7 +28,7 @@
       await nextTick();
       scrollToActiveItem();
     } else if (event.key === "Enter" && activeIndex.value >= 0) {
-      selectedItem(props.responseData[activeIndex.value].alias);
+      selectItem(props.responseData[activeIndex.value].alias);
     }
   };
 
@@ -55,7 +55,7 @@
         v-for="(item, index) in responseData"
         :key="JSON.stringify(item)"
         :class="['suggest-item', { active: index === activeIndex }]"
-        @click="selectedItem(item.alias)"
+        @click="selectItem(item.alias)"
         role="option">
         <component :is="item.type === 'company' ? VCompanyEntity : VUserEntity" :item="item" />
       </li>
